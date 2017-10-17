@@ -5,8 +5,10 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -17,7 +19,6 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
 
-import java.io.File;
 import java.nio.charset.Charset;
 import java.util.List;
 
@@ -90,18 +91,21 @@ public class MainController {
 
     @FXML
     private void onMerge() {
-        Alert alert;
-        File directory;
+        _mergeButton.setText("Working, please wait...");
+        _mergeButton.setDisable(true);
+
         File index;
+        File screenSources;
+        File controllerSources;
 
         if (_screenSources.getText() != null) {
-            directory = new File(_screenSources.getText());
-            if (!directory.exists()) {
+            screenSources = new File(_screenSources.getText());
+            if (!screenSources.exists()) {
                 displayError("Screen sources error","The screen sources directory does not exist","Please make sure you've selected a screen sources directory");
                 return;
             }
             else {
-                index = new File(_screenSources + File.pathSeparator + "index.html");
+                index = new File(screenSources.getAbsolutePath() + File.separator + "index.html");
                 if (!index.exists()) {
                     displayError("Screen sources error","The screen sources directory seem invalid, no index.html found","Please make sure you've selected a screen sources directory");
                     return;
@@ -114,13 +118,13 @@ public class MainController {
         }
 
         if (_controllerSources.getText() != null) {
-            directory = new File(_controllerSources.getText());
-            if (!directory.exists()) {
+            controllerSources = new File(_controllerSources.getText());
+            if (!controllerSources.exists()) {
                 displayError("Controller sources error","The controller directory sources does not exist","Please make sure you've selected a controller sources directory");
                 return;
             }
             else {
-                index = new File(_controllerSources + File.pathSeparator + "index.html");
+                index = new File(controllerSources.getAbsolutePath() + File.separator + "index.html");
                 if (!index.exists()) {
                     displayError("Controller sources error","The controller sources directory seem invalid, no index.html found","Please make sure you've selected a controller sources directory");
                     return;
@@ -133,10 +137,64 @@ public class MainController {
         }
 
         if (_destinationFolder.getText() != null) {
-            directory = new File(_destinationFolder.getText());
-            if (directory.exists()) {
+            File destination = new File(_destinationFolder.getText());
+            if (destination.exists()) {
                 try {
-                    FileUtils.cleanDirectory(directory);
+                    FileUtils.cleanDirectory(destination);
+
+                    try {
+                        File screenDest = new File(destination.getAbsolutePath() + File.separator + "screen");
+                        File controllerDest = new File(destination.getAbsolutePath() + File.separator + "controller");
+                        FileUtils.forceMkdir(screenDest);
+                        FileUtils.forceMkdir(controllerDest);
+
+                        FileUtils.copyDirectory(screenSources, screenDest);
+                        FileUtils.copyDirectory(controllerSources, controllerDest);
+
+                        File screenIndex = new File(screenDest.getAbsolutePath() + File.separator + "index.html");
+                        File controllerIndex = new File(controllerDest.getAbsolutePath() + File.separator + "index.html");
+
+                        FileUtils.copyFile(screenIndex, new File(destination.getAbsolutePath() + File.separator + "/screen.html"));
+                        FileUtils.copyFile(controllerIndex, new File(destination.getAbsolutePath() + File.separator + "/controller.html"));
+
+                        List<String> screenLines = Files.readAllLines(Paths.get(destination.getAbsolutePath() + File.separator + "/screen.html"));
+                        if (screenLines.size() < 2) {
+                            displayError("Merge error","Screen index.html corrupted","The screen.html file seem corrupted, not enough lines");
+                            return;
+                        }
+                        else {
+                            screenLines.add(2, "\t<base href=\"screen/\">");
+                            Files.write(Paths.get(destination.getAbsolutePath() + File.separator + "/screen.html"), screenLines, StandardCharsets.UTF_8);
+                        }
+
+                        List<String> controllerLines = Files.readAllLines(Paths.get(destination.getAbsolutePath() + File.separator + "/controller.html"));
+                        if (controllerLines.size() < 2) {
+                            displayError("Merge error","Controller index.html corrupted","The controller.html file seem corrupted, not enough lines");
+                            return;
+                        }
+                        else {
+                            controllerLines.add(2, "\t<base href=\"controller/\">");
+                            Files.write(Paths.get(destination.getAbsolutePath() + File.separator + "/controller.html"), controllerLines, StandardCharsets.UTF_8);
+                        }
+
+                        if (_deleteIndexFileCheckBox.isSelected()) {
+                            FileUtils.forceDelete(screenIndex);
+                            FileUtils.forceDelete(controllerIndex);
+                        }
+
+                        Alert popup = new Alert(Alert.AlertType.INFORMATION);
+                        popup.setTitle("Done!");
+                        popup.setHeaderText("Merging success");
+                        popup.setContentText("Both projects have been merged in the destination folder");
+                        popup.showAndWait();
+
+                        _mergeButton.setText("Merge!");
+                        _mergeButton.setDisable(false);
+                    }
+                    catch (IOException e) {
+                        displayError("Merge error","Merging failed","Check you have permissions to write in the destination directory.\r\n\r\n" + e.getMessage());
+                        return;
+                    }
                 }
                 catch (IOException e) {
                     displayError("Destination error","The destination directory does not exist","Please make sure you've selected a destination directory");
@@ -160,6 +218,9 @@ public class MainController {
         alert.setHeaderText(header);
         alert.setContentText(content);
         alert.showAndWait();
+
+        _mergeButton.setText("Merge!");
+        _mergeButton.setDisable(false);
     }
 
     public void setMain(Main main) {
