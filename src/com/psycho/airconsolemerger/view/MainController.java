@@ -178,22 +178,22 @@ public class MainController {
                         FileUtils.copyFile(controllerIndex, new File(destination.getAbsolutePath() + File.separator + "/controller.html"));
 
                         List<String> screenLines = Files.readAllLines(Paths.get(destination.getAbsolutePath() + File.separator + "/screen.html"));
-                        if (screenLines.size() < 2) {
+                        if (screenLines.size() < 4) {
                             displayError("Merge error","Screen index.html corrupted","The screen.html file seem corrupted, not enough lines");
                             return;
                         }
                         else {
-                            screenLines.add(2, "\t<base href=\"screen/\">");
+                            screenLines.add(3, "\t<base href=\"screen/\">");
                             Files.write(Paths.get(destination.getAbsolutePath() + File.separator + "/screen.html"), screenLines, StandardCharsets.UTF_8);
                         }
 
                         List<String> controllerLines = Files.readAllLines(Paths.get(destination.getAbsolutePath() + File.separator + "/controller.html"));
-                        if (controllerLines.size() < 2) {
+                        if (controllerLines.size() < 4) {
                             displayError("Merge error","Controller index.html corrupted","The controller.html file seem corrupted, not enough lines");
                             return;
                         }
                         else {
-                            controllerLines.add(2, "\t<base href=\"controller/\">");
+                            controllerLines.add(3, "\t<base href=\"controller/\">");
                             Files.write(Paths.get(destination.getAbsolutePath() + File.separator + "/controller.html"), controllerLines, StandardCharsets.UTF_8);
                         }
 
