@@ -2,6 +2,7 @@ package com.psycho.airconsolemerger.view;
 
 import com.psycho.airconsolemerger.Main;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.ByteBuffer;
@@ -9,6 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -21,6 +23,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.nio.charset.Charset;
 import java.util.List;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class MainController {
     @FXML
@@ -50,7 +54,6 @@ public class MainController {
     @FXML
     private Button _mergeButton;
 
-    private Main _main;
     private Stage _stage;
 
     public MainController() {};
@@ -182,6 +185,16 @@ public class MainController {
                             FileUtils.forceDelete(controllerIndex);
                         }
 
+                        if (_zipResultCheckBox.isSelected()) {
+                            try {
+                                pack(destination.getAbsolutePath(), destination.getAbsolutePath() + File.separator + "UploadMe.zip");
+                            }
+                            catch(IOException e) {
+                                displayError("Merge error","Zipping error","Couldn't zip the project.\r\n\r\n" + e.getMessage());
+                                return;
+                            }
+                        }
+
                         Alert popup = new Alert(Alert.AlertType.INFORMATION);
                         popup.setTitle("Done!");
                         popup.setHeaderText("Merging success");
@@ -193,22 +206,18 @@ public class MainController {
                     }
                     catch (IOException e) {
                         displayError("Merge error","Merging failed","Check you have permissions to write in the destination directory.\r\n\r\n" + e.getMessage());
-                        return;
                     }
                 }
                 catch (IOException e) {
                     displayError("Destination error","The destination directory does not exist","Please make sure you've selected a destination directory");
-                    return;
                 }
             }
             else {
                 displayError("Destination error","The destination directory does not exist","Please make sure you've selected a destination directory");
-                return;
             }
         }
         else {
             displayError("Destination error","No selected destination directory","Please make sure you've selected a destination directory");
-            return;
         }
     }
 
@@ -221,10 +230,6 @@ public class MainController {
 
         _mergeButton.setText("Merge!");
         _mergeButton.setDisable(false);
-    }
-
-    public void setMain(Main main) {
-        _main = main;
     }
 
     public void setStage(Stage stage) {
@@ -365,5 +370,27 @@ public class MainController {
         Path file = new File(path).toPath();
 
         return Files.getFileAttributeView(file, UserDefinedFileAttributeView.class);
+    }
+
+    public static void pack(String sourceDirPath, String zipFilePath) throws IOException {
+        final String tempDir = System.getenv("TEMP");
+        Path p = Files.createFile(Paths.get(zipFilePath));
+        try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
+            Path pp = Paths.get(sourceDirPath);
+            Files.walk(pp)
+                    .filter(path -> !Files.isDirectory(path))
+                    .forEach(path -> {
+                        if (!path.toString().endsWith("UploadMe.zip")) {
+                            ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                            try {
+                                zs.putNextEntry(zipEntry);
+                                Files.copy(path, zs);
+                                zs.closeEntry();
+                            } catch (Exception e) {
+                                System.err.println(e);
+                            }
+                        }
+                    });
+        }
     }
 }

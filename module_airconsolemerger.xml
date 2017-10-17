@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_airconsolemerger" default="compile.module.airconsolemerger">
+  <dirname property="module.airconsolemerger.basedir" file="${ant.file.module_airconsolemerger}"/>
+  
+  <property name="module.jdk.home.airconsolemerger" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.airconsolemerger" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.airconsolemerger" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.airconsolemerger" value="-encoding UTF-8 -source 1.8 -target 1.8 ${compiler.args}"/>
+  
+  <property name="airconsolemerger.output.dir" value="${module.airconsolemerger.basedir}/out/production/AirConsoleMerger"/>
+  <property name="airconsolemerger.testoutput.dir" value="${module.airconsolemerger.basedir}/out/test/AirConsoleMerger"/>
+  
+  <path id="airconsolemerger.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="airconsolemerger.module.production.classpath">
+    <path refid="${module.jdk.classpath.airconsolemerger}"/>
+    <path refid="library.commons-io-2.5.classpath"/>
+  </path>
+  
+  <path id="airconsolemerger.runtime.production.module.classpath">
+    <pathelement location="${airconsolemerger.output.dir}"/>
+    <path refid="library.commons-io-2.5.classpath"/>
+  </path>
+  
+  <path id="airconsolemerger.module.classpath">
+    <path refid="${module.jdk.classpath.airconsolemerger}"/>
+    <pathelement location="${airconsolemerger.output.dir}"/>
+    <path refid="library.commons-io-2.5.classpath"/>
+  </path>
+  
+  <path id="airconsolemerger.runtime.module.classpath">
+    <pathelement location="${airconsolemerger.testoutput.dir}"/>
+    <pathelement location="${airconsolemerger.output.dir}"/>
+    <path refid="library.commons-io-2.5.classpath"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.airconsolemerger">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.airconsolemerger">
+    <patternset refid="excluded.from.module.airconsolemerger"/>
+  </patternset>
+  
+  <path id="airconsolemerger.module.sourcepath">
+    <dirset dir="${module.airconsolemerger.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.airconsolemerger" depends="compile.module.airconsolemerger.production,compile.module.airconsolemerger.tests" description="Compile module AirConsoleMerger"/>
+  
+  <target name="compile.module.airconsolemerger.production" depends="register.custom.compilers" description="Compile module AirConsoleMerger; production classes">
+    <mkdir dir="${airconsolemerger.output.dir}"/>
+    <javac2 destdir="${airconsolemerger.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.airconsolemerger}/javac">
+      <compilerarg line="${compiler.args.airconsolemerger}"/>
+      <bootclasspath refid="airconsolemerger.module.bootclasspath"/>
+      <classpath refid="airconsolemerger.module.production.classpath"/>
+      <src refid="airconsolemerger.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.airconsolemerger"/>
+    </javac2>
+    
+    <copy todir="${airconsolemerger.output.dir}">
+      <fileset dir="${module.airconsolemerger.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.airconsolemerger.tests" depends="register.custom.compilers,compile.module.airconsolemerger.production" description="compile module AirConsoleMerger; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.airconsolemerger" description="cleanup module">
+    <delete dir="${airconsolemerger.output.dir}"/>
+    <delete dir="${airconsolemerger.testoutput.dir}"/>
+  </target>
+</project>

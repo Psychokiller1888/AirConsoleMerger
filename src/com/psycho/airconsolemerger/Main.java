@@ -16,13 +16,12 @@ public class Main extends Application {
         loader.setLocation(getClass().getResource("view/main.fxml"));
         Parent root = loader.load();
 
-        primaryStage.setTitle("AirConsole Construct 2/3 project merger v.0.1 alpha");
+        primaryStage.setTitle("AirConsole Construct 2/3 project merger v.0.2 alpha");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
         primaryStage.show();
 
         MainController mainController = loader.getController();
-        mainController.setMain(this);
         mainController.setStage(primaryStage);
         mainController.init();
     }
