@@ -1,22 +1,24 @@
 package com.psycho.airconsolemerger.view;
 
 import com.psycho.airconsolemerger.Main;
+
+import java.awt.*;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.UserDefinedFileAttributeView;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.CheckBox;
+import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import org.apache.commons.io.FileUtils;
@@ -54,9 +56,12 @@ public class MainController {
     @FXML
     private Button _mergeButton;
 
+    @FXML
+    private Text _checkNewVersionLink;
+
     private Stage _stage;
 
-    public MainController() {};
+    public MainController() {}
 
     @FXML
     private void onSelectScreenSources() {
@@ -93,9 +98,21 @@ public class MainController {
     }
 
     @FXML
+    private void onClickLink() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://github.com/Psychokiller1888/AirConsoleMerger/releases").toURI());
+        }
+        catch (Exception e) {}
+    }
+
+    @FXML
     private void onMerge() {
         _mergeButton.setText("Working, please wait...");
         _mergeButton.setDisable(true);
+
+        _selectScreenSourceButton.setDisable(true);
+        _selectControllerSourceButton.setDisable(true);
+        _selectDestinationButton.setDisable(true);
 
         File index;
         File screenSources;
@@ -203,6 +220,10 @@ public class MainController {
 
                         _mergeButton.setText("Merge!");
                         _mergeButton.setDisable(false);
+
+                        _selectScreenSourceButton.setDisable(false);
+                        _selectControllerSourceButton.setDisable(false);
+                        _selectDestinationButton.setDisable(false);
                     }
                     catch (IOException e) {
                         displayError("Merge error","Merging failed","Check you have permissions to write in the destination directory.\r\n\r\n" + e.getMessage());
@@ -230,6 +251,10 @@ public class MainController {
 
         _mergeButton.setText("Merge!");
         _mergeButton.setDisable(false);
+
+        _selectScreenSourceButton.setDisable(false);
+        _selectControllerSourceButton.setDisable(false);
+        _selectDestinationButton.setDisable(false);
     }
 
     public void setStage(Stage stage) {
@@ -313,14 +338,17 @@ public class MainController {
 
         try {
             String name = "user." + var;
+            ByteBuffer buf;
             UserDefinedFileAttributeView view = getAttrView();
-
-            ByteBuffer buf = null;
-            buf = ByteBuffer.allocate(view.size(name));
-            view.read(name, buf);
-            buf.flip();
-
-            return Charset.defaultCharset().decode(buf).toString();
+            if (view != null) {
+                buf = ByteBuffer.allocate(view.size(name));
+                view.read(name, buf);
+                buf.flip();
+                return Charset.defaultCharset().decode(buf).toString();
+            }
+            else {
+                return null;
+            }
         }
         catch (IOException e) {
             e.printStackTrace();
@@ -331,16 +359,17 @@ public class MainController {
     private Boolean attributeExists(String var)
     {
         String search = "user." + var;
-        List<String> attributes = null;
+        List<String> attributes;
 
         try {
             attributes = getAttrView().list();
+            return attributes.contains(search);
         }
         catch (IOException e) {
             e.printStackTrace();
         }
 
-        return attributes.contains(search);
+        return false;
     }
 
     private void deleteAttribute(String var)
@@ -351,29 +380,30 @@ public class MainController {
 
         try {
             UserDefinedFileAttributeView view = getAttrView();
-            view.delete("user." + var);
-
-        } catch (IOException e) {
+            if (view != null) {
+                view.delete("user." + var);
+            }
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     private UserDefinedFileAttributeView getAttrView()
     {
-        String path = null;
+        String path;
         try {
             path = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
+            Path file = new File(path).toPath();
+            return Files.getFileAttributeView(file, UserDefinedFileAttributeView.class);
         }
         catch (URISyntaxException e) {
             e.printStackTrace();
         }
-        Path file = new File(path).toPath();
-
-        return Files.getFileAttributeView(file, UserDefinedFileAttributeView.class);
+        return null;
     }
 
-    public static void pack(String sourceDirPath, String zipFilePath) throws IOException {
-        final String tempDir = System.getenv("TEMP");
+    private static void pack(String sourceDirPath, String zipFilePath) throws IOException {
         Path p = Files.createFile(Paths.get(zipFilePath));
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
             Path pp = Paths.get(sourceDirPath);
@@ -387,7 +417,7 @@ public class MainController {
                                 Files.copy(path, zs);
                                 zs.closeEntry();
                             } catch (Exception e) {
-                                System.err.println(e);
+                                e.printStackTrace();
                             }
                         }
                     });
