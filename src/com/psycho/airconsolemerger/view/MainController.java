@@ -56,6 +56,7 @@ public class MainController {
     @FXML
     private Button _mergeButton;
 
+    @SuppressWarnings({"UnusedDeclaration"})
     @FXML
     private Text _checkNewVersionLink;
 
@@ -102,7 +103,9 @@ public class MainController {
         try {
             Desktop.getDesktop().browse(new URL("https://github.com/Psychokiller1888/AirConsoleMerger/releases").toURI());
         }
-        catch (Exception e) {}
+        catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -320,6 +323,7 @@ public class MainController {
         return null;
     }
 
+    @SuppressWarnings({"ConstantConditions"})
     private void writeAttribute(String key, String value) {
         UserDefinedFileAttributeView view = getAttrView();
         try {
@@ -356,6 +360,7 @@ public class MainController {
         }
     }
 
+    @SuppressWarnings({"ConstantConditions"})
     private Boolean attributeExists(String var)
     {
         String search = "user." + var;
