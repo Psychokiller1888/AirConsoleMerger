@@ -36,5 +36,18 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Text>
+      <Text fx:id="_airConsoleLink" layoutX="272.0" layoutY="390.0" onMouseClicked="#onClickAirConsoleLink" strokeType="OUTSIDE" strokeWidth="0.0" text="AirConsole">
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Text>
+      <Text fx:id="_donateLink" layoutX="28.0" layoutY="33.0" onMouseClicked="#onClickDonateLink" stroke="RED" strokeType="OUTSIDE" strokeWidth="2.0" text="DONATE">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
+      </Text>
    </children>
 </AnchorPane>

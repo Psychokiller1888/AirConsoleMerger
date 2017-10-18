@@ -5,25 +5,25 @@ import com.psycho.airconsolemerger.Main;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
+import java.lang.reflect.Field;
 import java.net.URL;
-import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.attribute.UserDefinedFileAttributeView;
+
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.control.CheckBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.apache.commons.io.FileUtils;
 
-import java.nio.charset.Charset;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -60,15 +60,23 @@ public class MainController {
     @FXML
     private Text _checkNewVersionLink;
 
-    private Stage _stage;
+    @SuppressWarnings({"UnusedDeclaration"})
+    @FXML
+    private Text _airConsoleLink;
 
-    public MainController() {}
+    @FXML
+    private Text _donateLink;
+
+    private Stage _stage;
+    private Main _main;
+
+    public MainController() { }
 
     @FXML
     private void onSelectScreenSources() {
         String path = showBrowseDialog("Please select the directory containing the screen", _screenSources);
         if (path != null) {
-            writeAttribute("screen", path);
+            _main.setProperty("screen", path);
         }
     }
 
@@ -76,7 +84,7 @@ public class MainController {
     private void onSelectControllerSources() {
         String path = showBrowseDialog("Please select the directory containing the controller", _controllerSources);
         if (path != null) {
-            writeAttribute("controller", path);
+            _main.setProperty("controller", path);
         }
     }
 
@@ -84,24 +92,44 @@ public class MainController {
     private void onSelectDestination() {
         String path = showBrowseDialog("Please select the destination directory", _destinationFolder);
         if (path != null) {
-            writeAttribute("destination", path);
+            _main.setProperty("destination", path);
         }
     }
 
     @FXML
     private void onToggleDelete() {
-        writeAttribute("deleteCheckBox", (_deleteIndexFileCheckBox.isSelected()) ? "1" : "0");
+        _main.setProperty("deleteCheckBox", (_deleteIndexFileCheckBox.isSelected()) ? "1" : "0");
     }
 
     @FXML
     private void onToggleZip() {
-        writeAttribute("zipCheckBox", (_zipResultCheckBox.isSelected()) ? "1" : "0");
+        _main.setProperty("zipCheckBox", (_zipResultCheckBox.isSelected()) ? "1" : "0");
     }
 
     @FXML
     private void onClickLink() {
         try {
             Desktop.getDesktop().browse(new URL("https://github.com/Psychokiller1888/AirConsoleMerger/releases").toURI());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onClickAirConsoleLink() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://www.airconsole.com/").toURI());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onClickDonateLink() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://paypal.me/Psychokiller1888?_ga=1.124552522.134207803.1503849857").toURI());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -264,9 +292,17 @@ public class MainController {
         _stage = stage;
     }
 
+    public void setMain (Main main) {
+        _main = main;
+    }
+
     public void init() {
+        Tooltip tooltip = new Tooltip("Like this tool or the Construct2/3 AirConsole plugins? They are free!\r\nThank you for buying me a couple of beers!");
+        hackTooltipStartTiming(tooltip);
+        Tooltip.install(_donateLink, tooltip);
+
         File directory;
-        String attr = getAttribute("screen");
+        String attr = _main.getPropertyValue("screen");
 
         if (attr != null) {
             directory = new File(attr);
@@ -274,38 +310,38 @@ public class MainController {
                 _screenSources.setText(attr);
             }
             else {
-                deleteAttribute("screen");
+                _main.setProperty("screen", "");
             }
         }
 
-        attr = getAttribute("controller");
+        attr = _main.getPropertyValue("controller");
         if (attr != null) {
             directory = new File(attr);
             if (directory.exists()) {
                 _controllerSources.setText(attr);
             }
             else {
-                deleteAttribute("controller");
+                _main.setProperty("controller", "");
             }
         }
 
-        attr = getAttribute("destination");
+        attr = _main.getPropertyValue("destination");
         if (attr != null) {
             directory = new File(attr);
             if (directory.exists()) {
                 _destinationFolder.setText(attr);
             }
             else {
-                deleteAttribute("destination");
+                _main.setProperty("destination", "");
             }
         }
 
-        attr = getAttribute("deleteCheckBox");
+        attr = _main.getPropertyValue("deleteCheckBox");
         if (attr != null) {
             _deleteIndexFileCheckBox.setSelected(attr.equalsIgnoreCase("1"));
         }
 
-        attr = getAttribute("zipCheckBox");
+        attr = _main.getPropertyValue("zipCheckBox");
         if (attr != null) {
             _zipResultCheckBox.setSelected(attr.equalsIgnoreCase("1"));
         }
@@ -319,91 +355,6 @@ public class MainController {
         if (selectedDirectory != null) {
             field.setText(selectedDirectory.getAbsolutePath());
             return selectedDirectory.getAbsolutePath();
-        }
-        return null;
-    }
-
-    @SuppressWarnings({"ConstantConditions"})
-    private void writeAttribute(String key, String value) {
-        UserDefinedFileAttributeView view = getAttrView();
-        try {
-            view.write("user." + key, Charset.defaultCharset().encode(value));
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String getAttribute(String var)
-    {
-        if (!attributeExists(var)) {
-            return null;
-        }
-
-        try {
-            String name = "user." + var;
-            ByteBuffer buf;
-            UserDefinedFileAttributeView view = getAttrView();
-            if (view != null) {
-                buf = ByteBuffer.allocate(view.size(name));
-                view.read(name, buf);
-                buf.flip();
-                return Charset.defaultCharset().decode(buf).toString();
-            }
-            else {
-                return null;
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @SuppressWarnings({"ConstantConditions"})
-    private Boolean attributeExists(String var)
-    {
-        String search = "user." + var;
-        List<String> attributes;
-
-        try {
-            attributes = getAttrView().list();
-            return attributes.contains(search);
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return false;
-    }
-
-    private void deleteAttribute(String var)
-    {
-        if (!attributeExists(var)) {
-            return;
-        }
-
-        try {
-            UserDefinedFileAttributeView view = getAttrView();
-            if (view != null) {
-                view.delete("user." + var);
-            }
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private UserDefinedFileAttributeView getAttrView()
-    {
-        String path;
-        try {
-            path = Main.class.getProtectionDomain().getCodeSource().getLocation().toURI().getPath();
-            Path file = new File(path).toPath();
-            return Files.getFileAttributeView(file, UserDefinedFileAttributeView.class);
-        }
-        catch (URISyntaxException e) {
-            e.printStackTrace();
         }
         return null;
     }
@@ -426,6 +377,24 @@ public class MainController {
                             }
                         }
                     });
+        }
+    }
+
+    public static void hackTooltipStartTiming(Tooltip tooltip) {
+        try {
+            Field fieldBehavior = tooltip.getClass().getDeclaredField("BEHAVIOR");
+            fieldBehavior.setAccessible(true);
+            Object objBehavior = fieldBehavior.get(tooltip);
+
+            Field fieldTimer = objBehavior.getClass().getDeclaredField("activationTimer");
+            fieldTimer.setAccessible(true);
+            Timeline objTimer = (Timeline) fieldTimer.get(objBehavior);
+
+            objTimer.getKeyFrames().clear();
+            objTimer.getKeyFrames().add(new KeyFrame(new Duration(100)));
+        }
+        catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
