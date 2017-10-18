@@ -1,0 +1,32 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="AirConsoleMerger">
+    <output-path>$PROJECT_DIR$/out/artifacts/AirConsoleMerger</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="alias" value="" />
+        <option name="appClass" value="com.psycho.airconsolemerger.Main" />
+        <option name="description" value="Merge your C2/3 generated controller with your C2/3 generated game easily" />
+        <option name="enabledSigning" value="true" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="icons">
+          <JavaFxApplicationIcons>
+            <option name="linuxIcon" value="$PROJECT_DIR$/src/airconsole_icon.png" />
+            <option name="macIcon" value="$PROJECT_DIR$/src/airconsole_icon.icns" />
+            <option name="windowsIcon" value="$PROJECT_DIR$/src/airconsole_icon.ico" />
+          </JavaFxApplicationIcons>
+        </option>
+        <option name="keystore" value="" />
+        <option name="nativeBundle" value="exe" />
+        <option name="title" value="AirConsole Merger" />
+        <option name="vendor" value="Sick Rabbit Studios" />
+        <option name="version" value="1.0" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="AirConsoleMerger.jar">
+        <element id="module-output" name="AirConsoleMerger" />
+      </element>
+      <element id="library" level="application" name="commons-io-2.5" />
+    </root>
+  </artifact>
+</component>
