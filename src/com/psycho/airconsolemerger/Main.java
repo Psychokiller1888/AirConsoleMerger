@@ -38,16 +38,21 @@ public class Main extends Application {
 
     @Override
     public void stop() {
+        saveProperties();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private void saveProperties() {
         OutputStream out = null;
 
         try {
-            URL resUrl = getClass().getResource("settings.properties");
-            File file = new File(resUrl.toURI());
-            out = new FileOutputStream(file);
-
+            out = new FileOutputStream("settings.properties");
             _properties.store(out, null);
         }
-        catch (IOException | URISyntaxException e) {
+        catch (IOException e) {
             e.printStackTrace();
         }
         finally {
@@ -62,20 +67,24 @@ public class Main extends Application {
         }
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
-
     private void loadProperties() {
         _properties = new Properties();
+
         InputStream in = null;
+        File settings = new File("settings.properties");
 
         try {
-            in = getClass().getResourceAsStream("settings.properties");
-            if (in == null) {
-                System.out.println("Can't load settings");
-                return;
+            if (settings.exists()) {
+                in = new FileInputStream(settings);
             }
+            else {
+                in = getClass().getResourceAsStream("settings.properties");
+                if (in == null) {
+                    System.out.println("Can't load settings");
+                    return;
+                }
+            }
+
             _properties.load(in);
         }
         catch (IOException e) {

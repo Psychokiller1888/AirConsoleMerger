@@ -380,7 +380,7 @@ public class MainController {
         }
     }
 
-    public static void hackTooltipStartTiming(Tooltip tooltip) {
+    private static void hackTooltipStartTiming(Tooltip tooltip) {
         try {
             Field fieldBehavior = tooltip.getClass().getDeclaredField("BEHAVIOR");
             fieldBehavior.setAccessible(true);
