@@ -3,7 +3,7 @@
   <dontWrapJar>false</dontWrapJar>
   <headerType>gui</headerType>
   <jar>D:\repositories\git\AirConsoleMerger\out\artifacts\AirConsoleMerger\AirConsoleMerger.jar</jar>
-  <outfile>C:\Users\Psychokiller1888\Desktop\AirConsoleMerger.exe</outfile>
+  <outfile>C:\Users\Psychokiller1888\Desktop\AirConsoleMerger-1.1.exe</outfile>
   <errTitle>AirConsole Merger has encountered an error and must close</errTitle>
   <cmdLine></cmdLine>
   <chdir>.</chdir>
@@ -28,12 +28,12 @@
     <runtimeBits>64/32</runtimeBits>
   </jre>
   <versionInfo>
-    <fileVersion>1.0.0.0</fileVersion>
-    <txtFileVersion>v1.0</txtFileVersion>
+    <fileVersion>1.1.0.0</fileVersion>
+    <txtFileVersion>v1.1</txtFileVersion>
     <fileDescription>AirConsoleMerger</fileDescription>
     <copyright>Copyright Sick Rabbit Studios</copyright>
-    <productVersion>1.0.0.0</productVersion>
-    <txtProductVersion>v1.0</txtProductVersion>
+    <productVersion>1.1.0.0</productVersion>
+    <txtProductVersion>v1.1</txtProductVersion>
     <productName>AirConsoleMerger</productName>
     <companyName>Sick Rabbit Studios</companyName>
     <internalName>AirConsoleMerger</internalName>
