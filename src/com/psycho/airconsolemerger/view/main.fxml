@@ -10,19 +10,19 @@
 
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psycho.airconsolemerger.view.MainController">
    <children>
-      <Button fx:id="_selectScreenSourceButton" layoutX="232.0" layoutY="50.0" mnemonicParsing="false" onAction="#onSelectScreenSources" text="Select screen directory" />
-      <Button fx:id="_selectControllerSourceButton" layoutX="224.0" layoutY="140.0" mnemonicParsing="false" onAction="#onSelectControllerSources" text="Select controller directory" />
-      <Button fx:id="_selectDestinationButton" layoutX="220.0" layoutY="230.0" mnemonicParsing="false" onAction="#onSelectDestination" text="Select destination directory" />
-      <Button fx:id="_mergeButton" layoutX="206.0" layoutY="340.0" mnemonicParsing="false" onAction="#onMerge" prefHeight="25.0" prefWidth="188.0" text="Merge!">
+      <Button fx:id="_selectScreenSourceButton" layoutX="220.0" layoutY="10.0" mnemonicParsing="false" onAction="#onSelectScreenSources" prefHeight="25.0" prefWidth="161.0" text="Select screen directory" />
+      <Button fx:id="_selectControllerSourceButton" layoutX="220.0" layoutY="100.0" mnemonicParsing="false" onAction="#onSelectControllerSources" prefHeight="25.0" prefWidth="161.0" text="Select controller directory" />
+      <Button fx:id="_selectDestinationButton" layoutX="220.0" layoutY="190.0" mnemonicParsing="false" onAction="#onSelectDestination" text="Select destination directory" />
+      <Button fx:id="_mergeButton" layoutX="206.0" layoutY="305.0" mnemonicParsing="false" onAction="#onMerge" prefHeight="25.0" prefWidth="188.0" text="Merge!">
          <font>
             <Font name="System Bold" size="12.0" />
          </font>
       </Button>
-      <TextField fx:id="_screenSources" editable="false" layoutX="26.0" layoutY="85.0" mouseTransparent="true" prefHeight="25.0" prefWidth="548.0" promptText="Screen root directory" />
-      <TextField fx:id="_controllerSources" editable="false" layoutX="26.0" layoutY="175.0" mouseTransparent="true" prefHeight="25.0" prefWidth="548.0" promptText="Controller root directory" />
-      <TextField fx:id="_destinationFolder" editable="false" layoutX="26.0" layoutY="265.0" mouseTransparent="true" prefHeight="25.0" prefWidth="548.0" promptText="Project destination directory" />
-      <CheckBox fx:id="_deleteIndexFileCheckBox" layoutX="25.0" layoutY="315.0" mnemonicParsing="false" onAction="#onToggleDelete" selected="true" text="Delete unused index files" />
-      <CheckBox fx:id="_zipResultCheckBox" layoutX="25.0" layoutY="345.0" mnemonicParsing="false" onAction="#onToggleZip" text="Zip project" />
+      <TextField fx:id="_screenSources" editable="false" layoutX="26.0" layoutY="45.0" mouseTransparent="true" prefHeight="25.0" prefWidth="548.0" promptText="Screen root directory" />
+      <TextField fx:id="_controllerSources" editable="false" layoutX="26.0" layoutY="135.0" mouseTransparent="true" prefHeight="25.0" prefWidth="548.0" promptText="Controller root directory" />
+      <TextField fx:id="_destinationFolder" editable="false" layoutX="26.0" layoutY="225.0" mouseTransparent="true" prefHeight="25.0" prefWidth="548.0" promptText="Project destination directory" />
+      <CheckBox fx:id="_deleteIndexFileCheckBox" layoutX="150.0" layoutY="270.0" mnemonicParsing="false" onAction="#onToggleDelete" selected="true" text="Delete unused index files" />
+      <CheckBox fx:id="_zipResultCheckBox" layoutX="363.0" layoutY="270.0" mnemonicParsing="false" onAction="#onToggleZip" text="Zip project" />
       <Text layoutX="418.0" layoutY="390.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Psychokiller1888 - Sick Rabbit Studios">
          <font>
             <Font size="10.0" />
@@ -49,5 +49,15 @@
             <Cursor fx:constant="HAND" />
          </cursor>
       </Text>
+      <Button fx:id="_copyScreenOnlyButton" layoutX="170.0" layoutY="346.0" mnemonicParsing="false" onAction="#onCopyScreenOnly" prefHeight="23.0" prefWidth="114.0" text="Update screen only">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
+      <Button fx:id="_copyControllerOnlyButton" layoutX="316.0" layoutY="346.0" mnemonicParsing="false" onAction="#onCopyControllerOnly" text="Update controller only">
+         <font>
+            <Font size="10.0" />
+         </font>
+      </Button>
    </children>
 </AnchorPane>

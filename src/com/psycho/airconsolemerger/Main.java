@@ -25,7 +25,7 @@ public class Main extends Application {
         loader.setLocation(getClass().getResource("view/main.fxml"));
         Parent root = loader.load();
 
-        primaryStage.setTitle("AirConsole Construct 2/3 project merger v.1.1");
+        primaryStage.setTitle("AirConsole Construct 2/3 project merger v.1.2");
         primaryStage.setScene(new Scene(root, 600, 400));
         primaryStage.getIcons().add(new Image(getClass().getResourceAsStream("icon.png")));
         primaryStage.show();
