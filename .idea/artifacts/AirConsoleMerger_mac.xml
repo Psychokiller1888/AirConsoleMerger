@@ -1,0 +1,22 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="AirConsoleMerger:mac">
+    <output-path>$PROJECT_DIR$/out/artifacts/AirConsoleMerger_mac</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="com.psycho.airconsolemerger.Main" />
+        <option name="description" value="Merging tool for AirConsole" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="nativeBundle" value="dmg" />
+        <option name="title" value="AirConsole Merger" />
+        <option name="vendor" value="com.sickrabbitstudios.airconsolemerger" />
+        <option name="version" value="1.2" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="AirConsoleMerger.jar">
+        <element id="module-output" name="AirConsoleMerger" />
+      </element>
+      <element id="library" level="application" name="commons-io-2.5" />
+    </root>
+  </artifact>
+</component>
