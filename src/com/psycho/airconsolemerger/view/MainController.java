@@ -126,7 +126,17 @@ public class MainController {
     @FXML
     private void onClickAirConsoleLink() {
         try {
-            Desktop.getDesktop().browse(new URL("https://www.airconsole.com/").toURI());
+            Desktop.getDesktop().browse(new URL("https://www.airconsole.com").toURI());
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void onClickPsychoLink() {
+        try {
+            Desktop.getDesktop().browse(new URL("https://sickrabbitstudios.com").toURI());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -136,7 +146,7 @@ public class MainController {
     @FXML
     private void onClickDonateLink() {
         try {
-            Desktop.getDesktop().browse(new URL("https://paypal.me/Psychokiller1888?_ga=1.124552522.134207803.1503849857").toURI());
+            Desktop.getDesktop().browse(new URL("https://paypal.me/Psychokiller1888").toURI());
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -299,6 +309,7 @@ public class MainController {
 
                         if (_zipResultCheckBox.isSelected()) {
                             try {
+                                FileUtils.deleteQuietly(new File(destination.getAbsolutePath() + File.separator + "UploadMe.zip"));
                                 pack(destination.getAbsolutePath(), destination.getAbsolutePath() + File.separator + "UploadMe.zip");
                             }
                             catch(IOException e) {
@@ -363,7 +374,7 @@ public class MainController {
     }
 
     public void init() {
-        Tooltip tooltip = new Tooltip("Like this tool or the Construct2/3 AirConsole plugins? They are free!\r\nThank you for buying me a couple of beers!");
+        Tooltip tooltip = new Tooltip("Like this tool or the Construct2/3 AirConsole plugins? They are free and will stay so!");
         hackTooltipStartTiming(tooltip);
         Tooltip.install(_donateLink, tooltip);
 
@@ -427,6 +438,7 @@ public class MainController {
 
     private static void pack(String sourceDirPath, String zipFilePath) throws IOException {
         Path p = Files.createFile(Paths.get(zipFilePath));
+
         try (ZipOutputStream zs = new ZipOutputStream(Files.newOutputStream(p))) {
             Path pp = Paths.get(sourceDirPath);
             Files.walk(pp)

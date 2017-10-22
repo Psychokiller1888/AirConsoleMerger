@@ -19,7 +19,7 @@
         <option name="nativeBundle" value="exe" />
         <option name="title" value="AirConsole Merger" />
         <option name="vendor" value="Sick Rabbit Studios" />
-        <option name="version" value="1.1" />
+        <option name="version" value="1.2" />
       </options>
     </properties>
     <root id="root">

@@ -23,10 +23,13 @@
       <TextField fx:id="_destinationFolder" editable="false" layoutX="26.0" layoutY="225.0" mouseTransparent="true" prefHeight="25.0" prefWidth="548.0" promptText="Project destination directory" />
       <CheckBox fx:id="_deleteIndexFileCheckBox" layoutX="150.0" layoutY="270.0" mnemonicParsing="false" onAction="#onToggleDelete" selected="true" text="Delete unused index files" />
       <CheckBox fx:id="_zipResultCheckBox" layoutX="363.0" layoutY="270.0" mnemonicParsing="false" onAction="#onToggleZip" text="Zip project" />
-      <Text layoutX="418.0" layoutY="390.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Psychokiller1888 - Sick Rabbit Studios">
+      <Text layoutX="418.0" layoutY="390.0" onMouseClicked="#onClickPsychoLink" strokeType="OUTSIDE" strokeWidth="0.0" text="Psychokiller1888 - Sick Rabbit Studios">
          <font>
             <Font size="10.0" />
          </font>
+         <cursor>
+            <Cursor fx:constant="HAND" />
+         </cursor>
       </Text>
       <Text fx:id="_checkNewVersionLink" layoutX="16.0" layoutY="390.0" onMouseClicked="#onClickLink" strokeType="OUTSIDE" strokeWidth="0.0" text="Check for new version">
          <font>
