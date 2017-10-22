@@ -445,7 +445,7 @@ public class MainController {
                     .filter(path -> !Files.isDirectory(path))
                     .forEach(path -> {
                         if (!path.toString().endsWith("UploadMe.zip")) {
-                            ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString());
+                            ZipEntry zipEntry = new ZipEntry(pp.relativize(path).toString().replace("\\", "/"));
                             try {
                                 zs.putNextEntry(zipEntry);
                                 Files.copy(path, zs);
