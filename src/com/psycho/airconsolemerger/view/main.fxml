@@ -8,6 +8,11 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
+<!--
+  ~ Copyright (c) Psychokiller1888 - Sick Rabbit Studios 2017.
+  ~ You may not redistribute this file. You may not sell part or the entire file
+  -->
+
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: grey;" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.psycho.airconsolemerger.view.MainController">
    <children>
       <Button fx:id="_selectScreenSourceButton" layoutX="220.0" layoutY="10.0" mnemonicParsing="false" onAction="#onSelectScreenSources" prefHeight="25.0" prefWidth="161.0" text="Select screen directory" />
